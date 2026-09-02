@@ -4,9 +4,9 @@ require_once 'models/Cliente.php';
 require_once 'models/Libro.php';
 
 class VentasController {
-    private Venta $model;
-    private Cliente $clienteModel;
-    private Libro $libroModel;
+    private $model;
+    private $clienteModel;
+    private $libroModel;
 
     public function __construct() {
         if (!isset($_SESSION['user_id'])) {

@@ -2,13 +2,13 @@
 require_once __DIR__ . '/../config/database.php';
 
 class Venta {
-    private PDO $db;
+    private $db; // Se quitó 'PDO' para asegurar compatibilidad con la versión de PHP
 
     public function __construct() {
         $this->db = Database::getInstance();
     }
 
-    public function getAll(): array {
+    public function getAll() {
         $sql = "SELECT v.*, c.nombre AS cliente, u.nombre AS vendedor 
                 FROM ventas v 
                 INNER JOIN clientes c ON v.cliente_id = c.id 
@@ -18,11 +18,11 @@ class Venta {
     }
 
     // REGISTRO DE VENTA Y DESCUENTO DE STOCK MEDIANTE TRANSACCIÓN ACID
-    public function registrarVenta(array $headerData, array $details): bool {
+    public function registrarVenta(array $headerData, array $details) {
         try {
             $this->db->beginTransaction();
 
-            // 1. Validar Stock Suficiente de todos los productos antes de procesar
+            // 1. Validar Stock Suficiente antes de procesar
             $sqlCheckStock = "SELECT stock, titulo FROM libros WHERE id = :id FOR UPDATE";
             $stmtCheck = $this->db->prepare($sqlCheckStock);
 
@@ -31,7 +31,6 @@ class Venta {
                 $libro = $stmtCheck->fetch();
 
                 if (!$libro || $libro['stock'] < $item['cantidad']) {
-                    // Lanza excepción para forzar el rollBack
                     throw new Exception("Stock insuficiente para el libro: " . ($libro['titulo'] ?? 'Desconocido'));
                 }
             }
