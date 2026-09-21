@@ -3,8 +3,8 @@ require_once 'models/Libro.php';
 require_once 'models/Categoria.php';
 
 class LibrosController {
-    private Libro $model;
-    private Categoria $catModel;
+    private $model;
+    private $catModel;
 
     public function __construct() {
         if (!isset($_SESSION['user_id'])) {
