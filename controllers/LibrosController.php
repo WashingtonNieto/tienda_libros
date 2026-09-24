@@ -11,6 +11,11 @@ class LibrosController {
             header('Location: ' . BASE_URL . '?c=auth&a=login');
             exit;
         }
+        if (!in_array($_SESSION['rol'], ['Administrador', 'Vendedor'], true)) {
+            $_SESSION['flash_error'] = 'Acceso Restringido: Módulo exclusivo para personal de la tienda.';
+            header('Location: ' . BASE_URL);
+            exit;
+        }
         $this->model = new Libro();
         $this->catModel = new Categoria();
     }

@@ -29,18 +29,28 @@ class User {
         return $stmt->fetchAll();
     }
 
-    // Registrar un nuevo usuario con contraseña hasheada
-    public function create(array $data): bool {
-        $sql = "INSERT INTO usuarios (rol_id, nombre, email, password, estado) 
+    // Registrar un nuevo usuario con contraseña hasheada. Devuelve el ID insertado o false.
+    public function create(array $data) {
+        $sql = "INSERT INTO usuarios (rol_id, nombre, email, password, estado)
                 VALUES (:rol_id, :nombre, :email, :password, 1)";
         $stmt = $this->db->prepare($sql);
-        
-        return $stmt->execute([
+
+        $ok = $stmt->execute([
             ':rol_id'   => $data['rol_id'],
             ':nombre'   => $data['nombre'],
             ':email'    => $data['email'],
             ':password' => password_hash($data['password'], PASSWORD_BCRYPT)
         ]);
+
+        return $ok ? (int)$this->db->lastInsertId() : false;
+    }
+
+    // Nombre del rol dado su id (para decidir el flujo de registro)
+    public function getRoleName(int $rolId): ?string {
+        $stmt = $this->db->prepare("SELECT nombre FROM roles WHERE id = :id LIMIT 1");
+        $stmt->execute([':id' => $rolId]);
+        $rol = $stmt->fetch();
+        return $rol ? $rol['nombre'] : null;
     }
 
 }

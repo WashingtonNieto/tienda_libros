@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 27, 2026 at 05:54 AM
+-- Generation Time: Sep 24, 2026 at 12:18 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -52,6 +52,7 @@ INSERT INTO `categorias` (`id`, `nombre`, `descripcion`, `created_at`) VALUES
 
 CREATE TABLE `clientes` (
   `id` int(11) NOT NULL,
+  `usuario_id` int(11) DEFAULT NULL,
   `documento` varchar(20) NOT NULL,
   `nombre` varchar(100) NOT NULL,
   `email` varchar(150) DEFAULT NULL,
@@ -65,9 +66,11 @@ CREATE TABLE `clientes` (
 -- Dumping data for table `clientes`
 --
 
-INSERT INTO `clientes` (`id`, `documento`, `nombre`, `email`, `telefono`, `direccion`, `created_at`, `updated_at`) VALUES
-(1, '1018234567', 'Juan Pablo Pérez', 'juan.perez@email.com', '3001234567', 'Calle 100 # 15-20', '2026-08-27 02:10:01', '2026-08-27 02:10:01'),
-(2, '52987654', 'Maria Fernanda Lopez', 'm.lopez@email.com', '3159876543', 'Av. Suba # 114-50', '2026-08-27 02:10:01', '2026-08-27 02:10:01');
+INSERT INTO `clientes` (`id`, `usuario_id`, `documento`, `nombre`, `email`, `telefono`, `direccion`, `created_at`, `updated_at`) VALUES
+(1, NULL, '1018234567', 'Juan Pablo Pérez', 'juan.perez@email.com', '3001234567', 'Calle 100 # 15-20', '2026-08-27 02:10:01', '2026-08-27 02:10:01'),
+(2, NULL, '52987654', 'Maria Fernanda Lopez', 'm.lopez@email.com', '3159876543', 'Av. Suba # 114-50', '2026-08-27 02:10:01', '2026-08-27 02:10:01'),
+(3, 5, 'TEST-1790217595', 'Cliente Prueba', 'cliente_test_1790217595@test.com', '3009998888', 'Calle Falsa 123', '2026-09-24 02:39:55', '2026-09-24 02:39:55'),
+(4, 6, '79999999', 'Mario Nieto', 'mnieto@gmail.com', '3133163023', 'Calle 15', '2026-09-24 10:07:20', '2026-09-24 10:07:20');
 
 -- --------------------------------------------------------
 
@@ -136,7 +139,10 @@ CREATE TABLE `detalle_ventas` (
 
 INSERT INTO `detalle_ventas` (`id`, `venta_id`, `libro_id`, `cantidad`, `precio_unitario`, `subtotal`) VALUES
 (1, 1, 1, 1, 160000.00, 160000.00),
-(2, 1, 3, 1, 55000.00, 55000.00);
+(2, 1, 3, 1, 55000.00, 55000.00),
+(3, 2, 1, 2, 160000.00, 320000.00),
+(4, 3, 3, 1, 55000.00, 55000.00),
+(5, 3, 5, 2, 50000.00, 100000.00);
 
 -- --------------------------------------------------------
 
@@ -165,11 +171,11 @@ CREATE TABLE `libros` (
 --
 
 INSERT INTO `libros` (`id`, `categoria_id`, `isbn`, `titulo`, `autor`, `precio_compra`, `precio_venta`, `stock`, `caratula`, `destacado`, `estado`, `created_at`, `updated_at`) VALUES
-(1, 1, '978-0132350884', 'Clean Code', 'Robert C. Martin', 120000.00, 160000.00, 15, 'clean_code.jpg', 0, 1, '2026-08-27 02:10:01', '2026-08-27 03:32:14'),
-(2, 1, '978-0201633610', 'Design Patterns', 'Erich Gamma et al.', 140000.00, 190000.00, 8, 'design_patterns.jpg', 0, 1, '2026-08-27 02:10:01', '2026-08-27 03:32:08'),
-(3, 2, '978-0451524935', '1984', 'George Orwell', 35000.00, 55000.00, 25, 'cover_6a8faf5b50d28.png', 1, 1, '2026-08-27 02:10:01', '2026-08-27 03:30:35'),
+(1, 1, '978-0132350884', 'Clean Code', 'Robert C. Martin', 120000.00, 160000.00, 13, 'cover_6ab4888042809.png', 0, 1, '2026-08-27 02:10:01', '2026-09-24 02:39:55'),
+(2, 1, '978-0201633610', 'Design Patterns', 'Erich Gamma et al.', 140000.00, 190000.00, 8, 'cover_6ab4f888d7f46.png', 0, 1, '2026-08-27 02:10:01', '2026-09-24 10:16:40'),
+(3, 2, '978-0451524935', '1984', 'George Orwell', 35000.00, 55000.00, 24, 'cover_6a8faf5b50d28.png', 1, 1, '2026-08-27 02:10:01', '2026-09-24 10:08:58'),
 (4, 3, '978-0307474773', 'El Método Lean Startup', 'Eric Ries', 45000.00, 70000.00, 12, 'cover_6a8faf061fcd4.png', 1, 1, '2026-08-27 02:10:01', '2026-08-27 03:31:59'),
-(5, 4, '978-628-7638-90-7', 'El buen mal', 'Samanta Schweblin', 35000.00, 50000.00, 10, 'cover_6a8faeabc5844.png', 1, 1, '2026-08-27 03:27:39', '2026-08-27 03:31:50');
+(5, 4, '978-628-7638-90-7', 'El buen mal', 'Samanta Schweblin', 35000.00, 50000.00, 8, 'cover_6a8faeabc5844.png', 1, 1, '2026-08-27 03:27:39', '2026-09-24 10:08:58');
 
 -- --------------------------------------------------------
 
@@ -216,7 +222,8 @@ CREATE TABLE `roles` (
 
 INSERT INTO `roles` (`id`, `nombre`, `descripcion`, `created_at`) VALUES
 (1, 'Administrador', 'Control total del sistema, compras a proveedores y gestion de usuarios', '2026-08-27 02:10:01'),
-(2, 'Vendedor', 'Gestion de ventas a clientes y consulta de inventario', '2026-08-27 02:10:01');
+(2, 'Vendedor', 'Gestion de ventas a clientes y consulta de inventario', '2026-08-27 02:10:01'),
+(3, 'Cliente', 'Cliente registrado que compra en la tienda online', '2026-09-24 02:36:39');
 
 -- --------------------------------------------------------
 
@@ -240,9 +247,12 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id`, `rol_id`, `nombre`, `email`, `password`, `estado`, `created_at`, `updated_at`) VALUES
-(1, 1, 'Admin Principal', 'admin@tienda.com', '$2y$10$uSAzDixkpH3OM818fV3DKeCH.EnzLnwu3N77jZ.w/EYqkTFywXQ2a', 1, '2026-08-27 02:10:01', '2026-08-27 03:40:25'),
+(1, 1, 'Admin Principal', 'admin@tienda.com', '$2y$10$J6hQyIyCb0MZCGzdtQbtkuX4zFhGt46B.EmY1eeiXkcYZWm1pyiYy', 1, '2026-08-27 02:10:01', '2026-09-24 02:17:55'),
 (2, 2, 'Vendedor Uno', 'vendedor1@tienda.com', '$2y$10$uSAzDixkpH3OM818fV3DKeCH.EnzLnwu3N77jZ.w/EYqkTFywXQ2a', 1, '2026-08-27 02:10:01', '2026-08-27 03:40:34'),
-(3, 1, 'Juan Perez', 'Jperez@gmail.com', '$2y$10$uSAzDixkpH3OM818fV3DKeCH.EnzLnwu3N77jZ.w/EYqkTFywXQ2a', 1, '2026-08-27 02:45:42', '2026-08-27 02:45:42');
+(3, 1, 'Juan Perez', 'Jperez@gmail.com', '$2y$10$uSAzDixkpH3OM818fV3DKeCH.EnzLnwu3N77jZ.w/EYqkTFywXQ2a', 1, '2026-08-27 02:45:42', '2026-08-27 02:45:42'),
+(4, 1, 'Washington', 'wnieto@gmail.com', '$2y$10$J6hQyIyCb0MZCGzdtQbtkuX4zFhGt46B.EmY1eeiXkcYZWm1pyiYy', 1, '2026-09-04 03:18:27', '2026-09-04 03:18:27'),
+(5, 3, 'Cliente Prueba', 'cliente_test_1790217595@test.com', '$2y$10$emndTmSjdH9vyeqBPZFhJuj58CY8OmLEcvhtBFNLqlhGuGOX9Pd4e', 1, '2026-09-24 02:39:55', '2026-09-24 02:39:55'),
+(6, 3, 'Mario Nieto', 'mnieto@gmail.com', '$2y$10$EALGR4XMbUVP.8x3vMY.FuGj/gMykHQljjgPi8XVO/U7rnAmn4p4O', 1, '2026-09-24 10:07:20', '2026-09-24 10:07:20');
 
 -- --------------------------------------------------------
 
@@ -264,7 +274,9 @@ CREATE TABLE `ventas` (
 --
 
 INSERT INTO `ventas` (`id`, `cliente_id`, `usuario_id`, `numero_factura`, `total`, `fecha_venta`) VALUES
-(1, 1, 2, 'FAC-VEN-0001', 215000.00, '2026-08-26 21:10:01');
+(1, 1, 2, 'FAC-VEN-0001', 215000.00, '2026-08-26 21:10:01'),
+(2, 3, 5, 'FAC-WEB-D7BD1CA4', 320000.00, '2026-09-23 21:39:55'),
+(3, 4, 6, 'FAC-WEB-6BA4712E', 155000.00, '2026-09-24 05:08:58');
 
 --
 -- Indexes for dumped tables
@@ -282,7 +294,8 @@ ALTER TABLE `categorias`
 --
 ALTER TABLE `clientes`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `documento` (`documento`);
+  ADD UNIQUE KEY `documento` (`documento`),
+  ADD UNIQUE KEY `uk_clientes_usuario` (`usuario_id`);
 
 --
 -- Indexes for table `compras`
@@ -364,7 +377,7 @@ ALTER TABLE `categorias`
 -- AUTO_INCREMENT for table `clientes`
 --
 ALTER TABLE `clientes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `compras`
@@ -382,7 +395,7 @@ ALTER TABLE `detalle_compras`
 -- AUTO_INCREMENT for table `detalle_ventas`
 --
 ALTER TABLE `detalle_ventas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `libros`
@@ -400,23 +413,29 @@ ALTER TABLE `proveedores`
 -- AUTO_INCREMENT for table `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `ventas`
 --
 ALTER TABLE `ventas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `clientes`
+--
+ALTER TABLE `clientes`
+  ADD CONSTRAINT `fk_clientes_usuarios` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Constraints for table `compras`

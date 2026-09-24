@@ -30,14 +30,38 @@
                             <label for="rol_id" class="form-label fw-semibold">Rol asignado</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-shield-check"></i></span>
-                                <select class="form-select" id="rol_id" name="rol_id" required>
+                                <select class="form-select" id="rol_id" name="rol_id" required onchange="toggleDatosCliente()">
                                     <option value="" selected disabled>Selecciona un rol...</option>
                                     <?php if (!empty($roles)): ?>
                                         <?php foreach ($roles as $rol): ?>
-                                            <option value="<?= $rol['id'] ?>"><?= htmlspecialchars($rol['nombre']) ?></option>
+                                            <option value="<?= $rol['id'] ?>" data-rol-nombre="<?= htmlspecialchars($rol['nombre']) ?>"><?= htmlspecialchars($rol['nombre']) ?></option>
                                         <?php endforeach; ?>
                                     <?php endif; ?>
                                 </select>
+                            </div>
+                        </div>
+
+                        <div id="datosCliente" style="display:none;">
+                            <div class="mb-3">
+                                <label for="documento" class="form-label fw-semibold">Documento</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-card-text"></i></span>
+                                    <input type="text" class="form-control" id="documento" name="documento" placeholder="Cédula / Documento">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="telefono" class="form-label fw-semibold">Teléfono</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                                    <input type="text" class="form-control" id="telefono" name="telefono" placeholder="Ej: 3001234567">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="direccion" class="form-label fw-semibold">Dirección</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                                    <input type="text" class="form-control" id="direccion" name="direccion" placeholder="Dirección de entrega">
+                                </div>
                             </div>
                         </div>
 
@@ -62,3 +86,14 @@
         </div>
     </div>
 </div>
+
+<script>
+function toggleDatosCliente() {
+    var select = document.getElementById('rol_id');
+    var opcion = select.options[select.selectedIndex];
+    var esCliente = opcion && opcion.dataset.rolNombre === 'Cliente';
+    var bloque = document.getElementById('datosCliente');
+    bloque.style.display = esCliente ? 'block' : 'none';
+    document.getElementById('documento').required = esCliente;
+}
+</script>

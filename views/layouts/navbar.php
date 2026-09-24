@@ -11,11 +11,17 @@
                 <li class="nav-item">
                     <a class="nav-link active" href="<?= BASE_URL ?>"><i class="bi bi-house-door me-1"></i> Inicio</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="<?= BASE_URL ?>?c=categorias"><i class="bi bi-tags me-1"></i> Categorías</a>
-                </li>
+                <?php if (!isset($_SESSION['user_id']) || $_SESSION['rol'] !== 'Cliente'): ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= BASE_URL ?>?c=categorias"><i class="bi bi-tags me-1"></i> Categorías</a>
+                    </li>
+                <?php endif; ?>
 
-                <?php if (isset($_SESSION['user_id'])): ?>
+                <?php if (isset($_SESSION['user_id']) && $_SESSION['rol'] === 'Cliente'): ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= BASE_URL ?>?c=carrito&a=catalogo"><i class="bi bi-shop me-1"></i> Catálogo</a>
+                    </li>
+                <?php elseif (isset($_SESSION['user_id'])): ?>
                     <li class="nav-item">
                         <a class="nav-link" href="<?= BASE_URL ?>?c=libros"><i class="bi bi-journal-bookmark me-1"></i> Libros</a>
                     </li>
@@ -40,6 +46,18 @@
             </ul>
 
             <ul class="navbar-nav ms-auto">
+                <?php if (isset($_SESSION['user_id']) && $_SESSION['rol'] === 'Cliente'): ?>
+                    <li class="nav-item me-2">
+                        <a class="nav-link position-relative" href="<?= BASE_URL ?>?c=carrito" title="Mi Carrito">
+                            <i class="bi bi-cart3 fs-5"></i>
+                            <?php if (!empty($_SESSION['carrito'])): ?>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark">
+                                    <?= array_sum($_SESSION['carrito']) ?>
+                                </span>
+                            <?php endif; ?>
+                        </a>
+                    </li>
+                <?php endif; ?>
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle text-warning" href="#" id="userDrop" data-bs-toggle="dropdown">

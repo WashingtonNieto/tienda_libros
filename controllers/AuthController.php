@@ -1,11 +1,14 @@
 <?php
 require_once 'models/User.php';
+require_once 'models/Cliente.php';
 
 class AuthController {
     private User $userModel;
+    private Cliente $clienteModel;
 
     public function __construct() {
         $this->userModel = new User();
+        $this->clienteModel = new Cliente();
     }
 
     // Muestra la vista de Login
@@ -68,15 +71,44 @@ class AuthController {
             exit;
         }
 
+        // Si el rol elegido es "Cliente" se debe registrar también el perfil de cliente
+        $esCliente = $this->userModel->getRoleName($rol_id) === 'Cliente';
+        $documento = trim($_POST['documento'] ?? '');
+        $telefono  = trim($_POST['telefono'] ?? '');
+        $direccion = trim($_POST['direccion'] ?? '');
+
+        if ($esCliente) {
+            if (empty($documento)) {
+                $_SESSION['flash_error'] = 'El documento es obligatorio para registrarte como cliente.';
+                header('Location: ' . BASE_URL . '?c=auth&a=register');
+                exit;
+            }
+            if ($this->clienteModel->findByDocumento($documento)) {
+                $_SESSION['flash_error'] = 'Ya existe un cliente registrado con ese documento.';
+                header('Location: ' . BASE_URL . '?c=auth&a=register');
+                exit;
+            }
+        }
+
         // Ejecutar registro
-        $success = $this->userModel->create([
+        $nuevoUsuarioId = $this->userModel->create([
             'rol_id'   => $rol_id,
             'nombre'   => $nombre,
             'email'    => $email,
             'password' => $password
         ]);
 
-        if ($success) {
+        if ($nuevoUsuarioId) {
+            if ($esCliente) {
+                $this->clienteModel->createFromUsuario([
+                    ':usuario_id' => $nuevoUsuarioId,
+                    ':documento'  => $documento,
+                    ':nombre'     => $nombre,
+                    ':email'      => $email,
+                    ':telefono'   => $telefono ?: null,
+                    ':direccion'  => $direccion ?: null
+                ]);
+            }
             $_SESSION['flash_success'] = 'Usuario registrado con éxito. Ya puedes iniciar sesión.';
             header('Location: ' . BASE_URL . '?c=auth&a=login');
         } else {

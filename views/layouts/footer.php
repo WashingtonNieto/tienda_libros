@@ -1,6 +1,6 @@
 <footer class="footer mt-auto py-3 bg-dark text-white text-center">
         <div class="container">
-            <small>&copy; <?= date('Y') ?> <?= APP_NAME ?> - Todos los derechos reservados.</small>
+            <small>&copy; <?= date('Y') ?> <?= APP_NAME ?> - Washington Web - Todos los derechos reservados.</small>
         </div>
     </footer>
 
