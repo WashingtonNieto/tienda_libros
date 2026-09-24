@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../config/database.php';
 
 class Libro {
-    private PDO $db;
+    private $db; // Se quitó 'PDO' para compatibilidad con versiones antiguas de PHP
 
     public function __construct() {
         $this->db = Database::getInstance();
@@ -53,10 +53,8 @@ class Libro {
                 FROM libros l 
                 INNER JOIN categorias c ON l.categoria_id = c.id 
                 WHERE l.destacado = 1 AND l.estado = 1 
-                ORDER BY l.id DESC LIMIT :limit";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-        $stmt->execute();
+                ORDER BY l.id DESC LIMIT " . (int)$limit;
+        $stmt = $this->db->query($sql);
         return $stmt->fetchAll();
     }
 
@@ -90,11 +88,8 @@ class Libro {
                 INNER JOIN libros l ON dv.libro_id = l.id 
                 INNER JOIN categorias c ON l.categoria_id = c.id 
                 GROUP BY l.id 
-                ORDER BY total_vendidos DESC LIMIT :limit";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-        $stmt->execute();
+                ORDER BY total_vendidos DESC LIMIT " . (int)$limit;
+        $stmt = $this->db->query($sql);
         return $stmt->fetchAll();
     }
-
 }

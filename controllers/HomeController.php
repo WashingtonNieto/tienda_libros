@@ -2,7 +2,7 @@
 require_once 'models/Libro.php';
 
 class HomeController {
-    private Libro $libroModel;
+    private $libroModel; // Se remueve el tipo 'Libro' para compatibilidad con PHP < 7.4
 
     public function __construct() {
         $this->libroModel = new Libro();
