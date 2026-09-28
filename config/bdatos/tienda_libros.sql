@@ -2,10 +2,10 @@
 -- version 4.8.5
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Sep 24, 2026 at 12:18 PM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- Servidor: 127.0.0.1
+-- Tiempo de generación: 28-09-2026 a las 18:02:20
+-- Versión del servidor: 10.1.38-MariaDB
+-- Versión de PHP: 7.1.27
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -54,13 +54,13 @@ INSERT INTO `categorias` (`id`, `nombre`, `descripcion`, `created_at`) VALUES
 CREATE TABLE `clientes` (
   `id` int(11) NOT NULL,
   `usuario_id` int(11) DEFAULT NULL,
-  `documento` varchar(20) NOT NULL,
-  `nombre` varchar(100) NOT NULL,
-  `email` varchar(150) DEFAULT NULL,
-  `telefono` varchar(20) DEFAULT NULL,
-  `direccion` varchar(255) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `documento` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nombre` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `telefono` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `direccion` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -139,11 +139,11 @@ CREATE TABLE `detalle_ventas` (
 --
 
 INSERT INTO `detalle_ventas` (`id`, `venta_id`, `libro_id`, `cantidad`, `precio_unitario`, `subtotal`) VALUES
-(1, 1, 1, 1, 160000.00, 160000.00),
-(2, 1, 3, 1, 55000.00, 55000.00),
-(3, 2, 1, 2, 160000.00, 320000.00),
-(4, 3, 3, 1, 55000.00, 55000.00),
-(5, 3, 5, 2, 50000.00, 100000.00);
+(1, 1, 1, 1, '160000.00', '160000.00'),
+(2, 1, 3, 1, '55000.00', '55000.00'),
+(3, 2, 1, 2, '160000.00', '320000.00'),
+(4, 3, 3, 1, '55000.00', '55000.00'),
+(5, 3, 5, 2, '50000.00', '100000.00');
 
 -- --------------------------------------------------------
 
@@ -172,11 +172,11 @@ CREATE TABLE `libros` (
 --
 
 INSERT INTO `libros` (`id`, `categoria_id`, `isbn`, `titulo`, `autor`, `precio_compra`, `precio_venta`, `stock`, `caratula`, `destacado`, `estado`, `created_at`, `updated_at`) VALUES
-(1, 1, '978-0132350884', 'Clean Code', 'Robert C. Martin', 120000.00, 160000.00, 13, 'cover_6ab4888042809.png', 0, 1, '2026-08-27 02:10:01', '2026-09-24 02:39:55'),
-(2, 1, '978-0201633610', 'Design Patterns', 'Erich Gamma et al.', 140000.00, 190000.00, 8, 'cover_6ab4f888d7f46.png', 0, 1, '2026-08-27 02:10:01', '2026-09-24 10:16:40'),
-(3, 2, '978-0451524935', '1984', 'George Orwell', 35000.00, 55000.00, 24, 'cover_6a8faf5b50d28.png', 1, 1, '2026-08-27 02:10:01', '2026-09-24 10:08:58'),
-(4, 3, '978-0307474773', 'El Método Lean Startup', 'Eric Ries', 45000.00, 70000.00, 12, 'cover_6a8faf061fcd4.png', 1, 1, '2026-08-27 02:10:01', '2026-08-27 03:31:59'),
-(5, 4, '978-628-7638-90-7', 'El buen mal', 'Samanta Schweblin', 35000.00, 50000.00, 8, 'cover_6a8faeabc5844.png', 1, 1, '2026-08-27 03:27:39', '2026-09-24 10:08:58');
+(1, 1, '978-0132350884', 'Clean Code', 'Robert C. Martin', '120000.00', '160000.00', 13, 'cover_6ab4888042809.png', 0, 1, '2026-08-27 02:10:01', '2026-09-24 02:39:55'),
+(2, 1, '978-0201633610', 'Design Patterns', 'Erich Gamma et al.', '140000.00', '190000.00', 8, 'cover_6ab4f888d7f46.png', 0, 1, '2026-08-27 02:10:01', '2026-09-24 10:16:40'),
+(3, 2, '978-0451524935', '1984', 'George Orwell', '35000.00', '55000.00', 24, 'cover_6a8faf5b50d28.png', 1, 1, '2026-08-27 02:10:01', '2026-09-24 10:08:58'),
+(4, 3, '978-0307474773', 'El Método Lean Startup', 'Eric Ries', '45000.00', '70000.00', 12, 'cover_6a8faf061fcd4.png', 1, 1, '2026-08-27 02:10:01', '2026-08-27 03:31:59'),
+(5, 4, '978-628-7638-90-7', 'El buen mal', 'Samanta Schweblin', '35000.00', '50000.00', 8, 'cover_6a8faeabc5844.png', 1, 1, '2026-08-27 03:27:39', '2026-09-24 10:08:58');
 
 -- --------------------------------------------------------
 
@@ -275,9 +275,9 @@ CREATE TABLE `ventas` (
 --
 
 INSERT INTO `ventas` (`id`, `cliente_id`, `usuario_id`, `numero_factura`, `total`, `fecha_venta`) VALUES
-(1, 1, 2, 'FAC-VEN-0001', 215000.00, '2026-08-26 21:10:01'),
-(2, 3, 5, 'FAC-WEB-D7BD1CA4', 320000.00, '2026-09-23 21:39:55'),
-(3, 4, 6, 'FAC-WEB-6BA4712E', 155000.00, '2026-09-24 05:08:58');
+(1, 1, 2, 'FAC-VEN-0001', '215000.00', '2026-08-26 21:10:01'),
+(2, 3, 5, 'FAC-WEB-D7BD1CA4', '320000.00', '2026-09-23 21:39:55'),
+(3, 4, 6, 'FAC-WEB-6BA4712E', '155000.00', '2026-09-24 05:08:58');
 
 --
 -- Índices para tablas volcadas
