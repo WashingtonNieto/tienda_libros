@@ -43,6 +43,9 @@
                         <a class="nav-link" href="<?= BASE_URL ?>?c=reportes"><i class="bi bi-graph-up me-1"></i> Reportes</a>
                     </li>
                 <?php endif; ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalTratamientoDatos"><i class="bi bi-shield-lock me-1"></i> Tratamiento de datos</a>
+                </li>
             </ul>
 
             <ul class="navbar-nav ms-auto">
@@ -86,3 +89,22 @@
         </div>
     </div>
 </nav>
+
+<div class="modal fade" id="modalTratamientoDatos" tabindex="-1" aria-labelledby="modalTratamientoDatosLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="modalTratamientoDatosLabel"><i class="bi bi-shield-lock text-warning me-2"></i>Tratamiento de datos</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-0" style="text-align: justify;">
+                    El presente proyecto tiene fines exclusivamente académicos. Los datos utilizados durante el desarrollo, las pruebas y la demostración del sistema son ficticios y fueron creados únicamente con fines de simulación. El sistema no recolecta, almacena ni procesa datos personales reales de estudiantes, docentes o terceros.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning text-dark fw-bold" data-bs-dismiss="modal">Entendido</button>
+            </div>
+        </div>
+    </div>
+</div>

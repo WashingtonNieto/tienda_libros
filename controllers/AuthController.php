@@ -45,7 +45,7 @@ class AuthController {
     }
 
 
-    // Procesa la inserción del nuevo usuario
+// Procesa la inserción del nuevo usuario
     public function store() {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: ' . BASE_URL . '?c=auth&a=register');
@@ -57,58 +57,34 @@ class AuthController {
         $password = trim($_POST['password'] ?? '');
         $rol_id   = (int)($_POST['rol_id'] ?? 0);
 
-        // Validaciones del servidor
         if (empty($nombre) || empty($email) || empty($password) || $rol_id === 0) {
             $_SESSION['flash_error'] = 'Todos los campos son obligatorios.';
             header('Location: ' . BASE_URL . '?c=auth&a=register');
             exit;
         }
 
-        // Verificar si el correo ya existe
+        // VALIDACIÓN CON EXPRESIÓN REGULAR (PHP)
+        $pattern = '/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/';
+        if (!preg_match($pattern, $password)) {
+            $_SESSION['flash_error'] = 'La contraseña debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas y al menos un número.';
+            header('Location: ' . BASE_URL . '?c=auth&a=register');
+            exit;
+        }
+
         if ($this->userModel->findByEmail($email)) {
             $_SESSION['flash_error'] = 'El correo electrónico ya se encuentra registrado.';
             header('Location: ' . BASE_URL . '?c=auth&a=register');
             exit;
         }
 
-        // Si el rol elegido es "Cliente" se debe registrar también el perfil de cliente
-        $esCliente = $this->userModel->getRoleName($rol_id) === 'Cliente';
-        $documento = trim($_POST['documento'] ?? '');
-        $telefono  = trim($_POST['telefono'] ?? '');
-        $direccion = trim($_POST['direccion'] ?? '');
-
-        if ($esCliente) {
-            if (empty($documento)) {
-                $_SESSION['flash_error'] = 'El documento es obligatorio para registrarte como cliente.';
-                header('Location: ' . BASE_URL . '?c=auth&a=register');
-                exit;
-            }
-            if ($this->clienteModel->findByDocumento($documento)) {
-                $_SESSION['flash_error'] = 'Ya existe un cliente registrado con ese documento.';
-                header('Location: ' . BASE_URL . '?c=auth&a=register');
-                exit;
-            }
-        }
-
-        // Ejecutar registro
-        $nuevoUsuarioId = $this->userModel->create([
+        $success = $this->userModel->create([
             'rol_id'   => $rol_id,
             'nombre'   => $nombre,
             'email'    => $email,
             'password' => $password
         ]);
 
-        if ($nuevoUsuarioId) {
-            if ($esCliente) {
-                $this->clienteModel->createFromUsuario([
-                    ':usuario_id' => $nuevoUsuarioId,
-                    ':documento'  => $documento,
-                    ':nombre'     => $nombre,
-                    ':email'      => $email,
-                    ':telefono'   => $telefono ?: null,
-                    ':direccion'  => $direccion ?: null
-                ]);
-            }
+        if ($success) {
             $_SESSION['flash_success'] = 'Usuario registrado con éxito. Ya puedes iniciar sesión.';
             header('Location: ' . BASE_URL . '?c=auth&a=login');
         } else {
