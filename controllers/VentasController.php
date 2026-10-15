@@ -4,13 +4,18 @@ require_once 'models/Cliente.php';
 require_once 'models/Libro.php';
 
 class VentasController {
-    private Venta $model;
-    private Cliente $clienteModel;
-    private Libro $libroModel;
+    private $model;
+    private $clienteModel;
+    private $libroModel;
 
     public function __construct() {
         if (!isset($_SESSION['user_id'])) {
             header('Location: ' . BASE_URL . '?c=auth&a=login');
+            exit;
+        }
+        if (!in_array($_SESSION['rol'], ['Administrador', 'Vendedor'], true)) {
+            $_SESSION['flash_error'] = 'Acceso Restringido: Módulo exclusivo para personal de la tienda.';
+            header('Location: ' . BASE_URL);
             exit;
         }
         $this->model = new Venta();

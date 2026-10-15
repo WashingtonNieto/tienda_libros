@@ -2,7 +2,7 @@
 require_once 'models/Proveedor.php';
 
 class ProveedoresController {
-    private Proveedor $model;
+    private $model; // Se remueve el tipado 'Proveedor' para compatibilidad
 
     public function __construct() {
         if (!isset($_SESSION['user_id'])) {

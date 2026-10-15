@@ -2,7 +2,7 @@
 require_once 'models/User.php';
 
 class AuthController {
-    private User $userModel;
+    private $userModel; // Se quitó el tipo 'User' para mantener compatibilidad con versiones antiguas de PHP
 
     public function __construct() {
         $this->userModel = new User();
@@ -84,7 +84,7 @@ class AuthController {
             $_SESSION['flash_success'] = 'Usuario registrado con éxito. Ya puedes iniciar sesión.';
             header('Location: ' . BASE_URL . '?c=auth&a=login');
         } else {
-            $_SESSION['flash_error'] = 'Error al intentar registrar el usuario.';
+     x|       $_SESSION['flash_error'] = 'Error al intentar registrar el usuario.';
             header('Location: ' . BASE_URL . '?c=auth&a=register');
         }
         exit;

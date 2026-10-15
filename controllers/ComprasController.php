@@ -4,9 +4,9 @@ require_once 'models/Proveedor.php';
 require_once 'models/Libro.php';
 
 class ComprasController {
-    private Compra $model;
-    private Proveedor $provModel;
-    private Libro $libroModel;
+    private $model;
+    private $provModel;
+    private $libroModel;
 
     public function __construct() {
         if (!isset($_SESSION['user_id']) || $_SESSION['rol'] !== 'Administrador') {

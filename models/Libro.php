@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../config/database.php';
 
 class Libro {
-    private PDO $db;
+    private $db; // Se quitó 'PDO' para compatibilidad con versiones antiguas de PHP
 
     public function __construct() {
         $this->db = Database::getInstance();
@@ -14,6 +14,17 @@ class Libro {
                 INNER JOIN categorias c ON l.categoria_id = c.id 
                 ORDER BY l.id DESC";
         return $this->db->query($sql)->fetchAll();
+    }
+
+    public function getById(int $id): ?array {
+        $sql = "SELECT l.*, c.nombre AS categoria
+                FROM libros l
+                INNER JOIN categorias c ON l.categoria_id = c.id
+                WHERE l.id = :id LIMIT 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':id' => $id]);
+        $libro = $stmt->fetch();
+        return $libro ? $libro : null;
     }
 
     public function create(array $data): bool {
@@ -42,10 +53,31 @@ class Libro {
                 FROM libros l 
                 INNER JOIN categorias c ON l.categoria_id = c.id 
                 WHERE l.destacado = 1 AND l.estado = 1 
-                ORDER BY l.id DESC LIMIT :limit";
+                ORDER BY l.id DESC LIMIT " . (int)$limit;
+        $stmt = $this->db->query($sql);
+        return $stmt->fetchAll();
+    }
+
+    // Catálogo público para clientes: solo libros disponibles, con búsqueda y filtro por categoría opcionales
+    public function getDisponibles(string $busqueda = '', int $categoriaId = 0): array {
+        $sql = "SELECT l.*, c.nombre AS categoria
+                FROM libros l
+                INNER JOIN categorias c ON l.categoria_id = c.id
+                WHERE l.estado = 1";
+        $params = [];
+
+        if ($busqueda !== '') {
+            $sql .= " AND (l.titulo LIKE :busqueda OR l.autor LIKE :busqueda)";
+            $params[':busqueda'] = '%' . $busqueda . '%';
+        }
+        if ($categoriaId > 0) {
+            $sql .= " AND l.categoria_id = :categoria_id";
+            $params[':categoria_id'] = $categoriaId;
+        }
+
+        $sql .= " ORDER BY l.titulo ASC";
         $stmt = $this->db->prepare($sql);
-        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-        $stmt->execute();
+        $stmt->execute($params);
         return $stmt->fetchAll();
     }
 
@@ -56,11 +88,8 @@ class Libro {
                 INNER JOIN libros l ON dv.libro_id = l.id 
                 INNER JOIN categorias c ON l.categoria_id = c.id 
                 GROUP BY l.id 
-                ORDER BY total_vendidos DESC LIMIT :limit";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-        $stmt->execute();
+                ORDER BY total_vendidos DESC LIMIT " . (int)$limit;
+        $stmt = $this->db->query($sql);
         return $stmt->fetchAll();
     }
-
 }

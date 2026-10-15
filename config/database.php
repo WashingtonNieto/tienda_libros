@@ -2,11 +2,11 @@
 require_once __DIR__ . '/config.php';
 
 class Database {
-    private static ?PDO $instance = null;
+    private static $instance = null; // Se remueve el ?PDO para compatibilidad total de sintaxis
 
     private function __construct() {} // Prevenir instanciación directa
 
-    public static function getInstance(): PDO {
+    public static function getInstance() {
         if (self::$instance === null) {
             try {
                 $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=" . DB_CHARSET;

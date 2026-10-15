@@ -2,13 +2,13 @@
 require_once __DIR__ . '/../config/database.php';
 
 class Compra {
-    private PDO $db;
+    private $db; // Se retiró 'PDO' para asegurar compatibilidad total
 
     public function __construct() {
         $this->db = Database::getInstance();
     }
 
-    public function getAll(): array {
+    public function getAll() {
         $sql = "SELECT c.*, p.razon_social AS proveedor, u.nombre AS usuario 
                 FROM compras c 
                 INNER JOIN proveedores p ON c.proveedor_id = p.id 
@@ -17,8 +17,8 @@ class Compra {
         return $this->db->query($sql)->fetchAll();
     }
 
-    // REGISTRO DE COMPRA MEDIANTE TRANSACCIONES PDO (ACID)
-    public function registrarCompra(array $headerData, array $details): bool {
+    // REGISTRO DE COMPRA MEDIANTE TRANSACCIÓN ACID
+    public function registrarCompra(array $headerData, array $details) {
         try {
             $this->db->beginTransaction();
 

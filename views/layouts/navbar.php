@@ -11,11 +11,17 @@
                 <li class="nav-item">
                     <a class="nav-link active" href="<?= BASE_URL ?>"><i class="bi bi-house-door me-1"></i> Inicio</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="<?= BASE_URL ?>?c=categorias"><i class="bi bi-tags me-1"></i> Categorías</a>
-                </li>
+                <?php if (!isset($_SESSION['user_id']) || $_SESSION['rol'] !== 'Cliente'): ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= BASE_URL ?>?c=categorias"><i class="bi bi-tags me-1"></i> Categorías</a>
+                    </li>
+                <?php endif; ?>
 
-                <?php if (isset($_SESSION['user_id'])): ?>
+                <?php if (isset($_SESSION['user_id']) && $_SESSION['rol'] === 'Cliente'): ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= BASE_URL ?>?c=carrito&a=catalogo"><i class="bi bi-shop me-1"></i> Catálogo</a>
+                    </li>
+                <?php elseif (isset($_SESSION['user_id'])): ?>
                     <li class="nav-item">
                         <a class="nav-link" href="<?= BASE_URL ?>?c=libros"><i class="bi bi-journal-bookmark me-1"></i> Libros</a>
                     </li>
@@ -37,9 +43,24 @@
                         <a class="nav-link" href="<?= BASE_URL ?>?c=reportes"><i class="bi bi-graph-up me-1"></i> Reportes</a>
                     </li>
                 <?php endif; ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalTratamientoDatos"><i class="bi bi-shield-lock me-1"></i> Tratamiento de datos</a>
+                </li>
             </ul>
 
             <ul class="navbar-nav ms-auto">
+                <?php if (isset($_SESSION['user_id']) && $_SESSION['rol'] === 'Cliente'): ?>
+                    <li class="nav-item me-2">
+                        <a class="nav-link position-relative" href="<?= BASE_URL ?>?c=carrito" title="Mi Carrito">
+                            <i class="bi bi-cart3 fs-5"></i>
+                            <?php if (!empty($_SESSION['carrito'])): ?>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark">
+                                    <?= array_sum($_SESSION['carrito']) ?>
+                                </span>
+                            <?php endif; ?>
+                        </a>
+                    </li>
+                <?php endif; ?>
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle text-warning" href="#" id="userDrop" data-bs-toggle="dropdown">
@@ -68,3 +89,22 @@
         </div>
     </div>
 </nav>
+
+<div class="modal fade" id="modalTratamientoDatos" tabindex="-1" aria-labelledby="modalTratamientoDatosLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="modalTratamientoDatosLabel"><i class="bi bi-shield-lock text-warning me-2"></i>Tratamiento de datos</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-0" style="text-align: justify;">
+                    El presente proyecto tiene fines exclusivamente académicos. Los datos utilizados durante el desarrollo, las pruebas y la demostración del sistema son ficticios y fueron creados únicamente con fines de simulación. El sistema no recolecta, almacena ni procesa datos personales reales de estudiantes, docentes o terceros.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning text-dark fw-bold" data-bs-dismiss="modal">Entendido</button>
+            </div>
+        </div>
+    </div>
+</div>

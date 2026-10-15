@@ -3,12 +3,17 @@ require_once 'models/Libro.php';
 require_once 'models/Categoria.php';
 
 class LibrosController {
-    private Libro $model;
-    private Categoria $catModel;
+    private $model;
+    private $catModel;
 
     public function __construct() {
         if (!isset($_SESSION['user_id'])) {
             header('Location: ' . BASE_URL . '?c=auth&a=login');
+            exit;
+        }
+        if (!in_array($_SESSION['rol'], ['Administrador', 'Vendedor'], true)) {
+            $_SESSION['flash_error'] = 'Acceso Restringido: Módulo exclusivo para personal de la tienda.';
+            header('Location: ' . BASE_URL);
             exit;
         }
         $this->model = new Libro();
