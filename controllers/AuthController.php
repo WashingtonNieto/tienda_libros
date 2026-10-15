@@ -41,8 +41,7 @@ class AuthController {
         require_once 'views/layouts/footer.php';
     }
 
-
-    // Procesa la inserción del nuevo usuario
+// Procesa la inserción del nuevo usuario
     public function store() {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: ' . BASE_URL . '?c=auth&a=register');
@@ -54,21 +53,26 @@ class AuthController {
         $password = trim($_POST['password'] ?? '');
         $rol_id   = (int)($_POST['rol_id'] ?? 0);
 
-        // Validaciones del servidor
         if (empty($nombre) || empty($email) || empty($password) || $rol_id === 0) {
             $_SESSION['flash_error'] = 'Todos los campos son obligatorios.';
             header('Location: ' . BASE_URL . '?c=auth&a=register');
             exit;
         }
 
-        // Verificar si el correo ya existe
+        // VALIDACIÓN CON EXPRESIÓN REGULAR (PHP)
+        $pattern = '/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/';
+        if (!preg_match($pattern, $password)) {
+            $_SESSION['flash_error'] = 'La contraseña debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas y al menos un número.';
+            header('Location: ' . BASE_URL . '?c=auth&a=register');
+            exit;
+        }
+
         if ($this->userModel->findByEmail($email)) {
             $_SESSION['flash_error'] = 'El correo electrónico ya se encuentra registrado.';
             header('Location: ' . BASE_URL . '?c=auth&a=register');
             exit;
         }
 
-        // Ejecutar registro
         $success = $this->userModel->create([
             'rol_id'   => $rol_id,
             'nombre'   => $nombre,
@@ -85,7 +89,6 @@ class AuthController {
         }
         exit;
     }
-
 
     // Procesa el formulario de Login
     public function authenticate() {
