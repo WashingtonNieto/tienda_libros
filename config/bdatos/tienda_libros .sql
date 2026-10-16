@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.5
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 28-09-2026 a las 18:02:20
--- Versión del servidor: 10.1.38-MariaDB
--- Versión de PHP: 7.1.27
+-- Tiempo de generación: 16-10-2026 a las 23:17:50
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -30,9 +29,9 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `categorias` (
   `id` int(11) NOT NULL,
-  `nombre` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `descripcion` text COLLATE utf8mb4_unicode_ci,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `nombre` varchar(100) NOT NULL,
+  `descripcion` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -53,25 +52,22 @@ INSERT INTO `categorias` (`id`, `nombre`, `descripcion`, `created_at`) VALUES
 
 CREATE TABLE `clientes` (
   `id` int(11) NOT NULL,
-  `usuario_id` int(11) DEFAULT NULL,
-  `documento` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `nombre` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `telefono` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `direccion` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `documento` varchar(20) NOT NULL,
+  `nombre` varchar(100) NOT NULL,
+  `email` varchar(150) DEFAULT NULL,
+  `telefono` varchar(20) DEFAULT NULL,
+  `direccion` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `clientes`
 --
 
-INSERT INTO `clientes` (`id`, `usuario_id`, `documento`, `nombre`, `email`, `telefono`, `direccion`, `created_at`, `updated_at`) VALUES
-(1, NULL, '1018234567', 'Juan Pablo Pérez', 'juan.perez@email.com', '3001234567', 'Calle 100 # 15-20', '2026-08-27 02:10:01', '2026-08-27 02:10:01'),
-(2, NULL, '52987654', 'Maria Fernanda Lopez', 'm.lopez@email.com', '3159876543', 'Av. Suba # 114-50', '2026-08-27 02:10:01', '2026-08-27 02:10:01'),
-(3, 5, 'TEST-1790217595', 'Cliente Prueba', 'cliente_test_1790217595@test.com', '3009998888', 'Calle Falsa 123', '2026-09-24 02:39:55', '2026-09-24 02:39:55'),
-(4, 6, '79999999', 'Mario Nieto', 'mnieto@gmail.com', '3133163023', 'Calle 15', '2026-09-24 10:07:20', '2026-09-24 10:07:20');
+INSERT INTO `clientes` (`id`, `documento`, `nombre`, `email`, `telefono`, `direccion`, `created_at`, `updated_at`) VALUES
+(1, '1018234567', 'Juan Pablo Pérez', 'juan.perez@email.com', '3001234567', 'Calle 100 # 15-20', '2026-08-27 02:10:01', '2026-08-27 02:10:01'),
+(2, '52987654', 'Maria Fernanda Lopez', 'm.lopez@email.com', '3159876543', 'Av. Suba # 114-50', '2026-08-27 02:10:01', '2026-08-27 02:10:01');
 
 -- --------------------------------------------------------
 
@@ -83,9 +79,9 @@ CREATE TABLE `compras` (
   `id` int(11) NOT NULL,
   `proveedor_id` int(11) NOT NULL,
   `usuario_id` int(11) NOT NULL COMMENT 'Usuario Admin que registra la compra',
-  `numero_factura` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `total` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `fecha_compra` datetime DEFAULT CURRENT_TIMESTAMP
+  `numero_factura` varchar(50) NOT NULL,
+  `total` decimal(12,2) NOT NULL DEFAULT 0.00,
+  `fecha_compra` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -93,7 +89,7 @@ CREATE TABLE `compras` (
 --
 
 INSERT INTO `compras` (`id`, `proveedor_id`, `usuario_id`, `numero_factura`, `total`, `fecha_compra`) VALUES
-(1, 1, 1, 'FAC-PROV-001', '4000000.00', '2026-08-26 21:10:01');
+(1, 1, 1, 'FAC-PROV-001', 4000000.00, '2026-08-26 21:10:01');
 
 -- --------------------------------------------------------
 
@@ -115,9 +111,9 @@ CREATE TABLE `detalle_compras` (
 --
 
 INSERT INTO `detalle_compras` (`id`, `compra_id`, `libro_id`, `cantidad`, `precio_unitario`, `subtotal`) VALUES
-(1, 1, 1, 15, '120000.00', '1800000.00'),
-(2, 1, 2, 8, '140000.00', '1120000.00'),
-(3, 1, 3, 25, '35000.00', '875000.00');
+(1, 1, 1, 15, 120000.00, 1800000.00),
+(2, 1, 2, 8, 140000.00, 1120000.00),
+(3, 1, 3, 25, 35000.00, 875000.00);
 
 -- --------------------------------------------------------
 
@@ -139,11 +135,8 @@ CREATE TABLE `detalle_ventas` (
 --
 
 INSERT INTO `detalle_ventas` (`id`, `venta_id`, `libro_id`, `cantidad`, `precio_unitario`, `subtotal`) VALUES
-(1, 1, 1, 1, '160000.00', '160000.00'),
-(2, 1, 3, 1, '55000.00', '55000.00'),
-(3, 2, 1, 2, '160000.00', '320000.00'),
-(4, 3, 3, 1, '55000.00', '55000.00'),
-(5, 3, 5, 2, '50000.00', '100000.00');
+(1, 1, 1, 1, 160000.00, 160000.00),
+(2, 1, 3, 1, 55000.00, 55000.00);
 
 -- --------------------------------------------------------
 
@@ -154,17 +147,17 @@ INSERT INTO `detalle_ventas` (`id`, `venta_id`, `libro_id`, `cantidad`, `precio_
 CREATE TABLE `libros` (
   `id` int(11) NOT NULL,
   `categoria_id` int(11) NOT NULL,
-  `isbn` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `titulo` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `autor` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `precio_compra` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `precio_venta` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `stock` int(11) NOT NULL DEFAULT '0',
-  `caratula` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT 'default_cover.jpg',
-  `destacado` tinyint(1) DEFAULT '0' COMMENT '1: Mas vendido / Recomendado',
-  `estado` tinyint(1) DEFAULT '1' COMMENT '1: Disponible, 0: Descontinuado',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `isbn` varchar(20) NOT NULL,
+  `titulo` varchar(200) NOT NULL,
+  `autor` varchar(150) NOT NULL,
+  `precio_compra` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `precio_venta` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `stock` int(11) NOT NULL DEFAULT 0,
+  `caratula` varchar(255) DEFAULT 'default_cover.jpg',
+  `destacado` tinyint(1) DEFAULT 0 COMMENT '1: Mas vendido / Recomendado',
+  `estado` tinyint(1) DEFAULT 1 COMMENT '1: Disponible, 0: Descontinuado',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -172,11 +165,11 @@ CREATE TABLE `libros` (
 --
 
 INSERT INTO `libros` (`id`, `categoria_id`, `isbn`, `titulo`, `autor`, `precio_compra`, `precio_venta`, `stock`, `caratula`, `destacado`, `estado`, `created_at`, `updated_at`) VALUES
-(1, 1, '978-0132350884', 'Clean Code', 'Robert C. Martin', '120000.00', '160000.00', 13, 'cover_6ab4888042809.png', 0, 1, '2026-08-27 02:10:01', '2026-09-24 02:39:55'),
-(2, 1, '978-0201633610', 'Design Patterns', 'Erich Gamma et al.', '140000.00', '190000.00', 8, 'cover_6ab4f888d7f46.png', 0, 1, '2026-08-27 02:10:01', '2026-09-24 10:16:40'),
-(3, 2, '978-0451524935', '1984', 'George Orwell', '35000.00', '55000.00', 24, 'cover_6a8faf5b50d28.png', 1, 1, '2026-08-27 02:10:01', '2026-09-24 10:08:58'),
-(4, 3, '978-0307474773', 'El Método Lean Startup', 'Eric Ries', '45000.00', '70000.00', 12, 'cover_6a8faf061fcd4.png', 1, 1, '2026-08-27 02:10:01', '2026-08-27 03:31:59'),
-(5, 4, '978-628-7638-90-7', 'El buen mal', 'Samanta Schweblin', '35000.00', '50000.00', 8, 'cover_6a8faeabc5844.png', 1, 1, '2026-08-27 03:27:39', '2026-09-24 10:08:58');
+(1, 1, '978-0132350884', 'Clean Code', 'Robert C. Martin', 120000.00, 160000.00, 15, 'clean_code.jpg', 0, 1, '2026-08-27 02:10:01', '2026-08-27 03:32:14'),
+(2, 1, '978-0201633610', 'Design Patterns', 'Erich Gamma et al.', 140000.00, 190000.00, 8, 'design_patterns.jpg', 0, 1, '2026-08-27 02:10:01', '2026-08-27 03:32:08'),
+(3, 2, '978-0451524935', '1984', 'George Orwell', 35000.00, 55000.00, 25, 'cover_6a8faf5b50d28.png', 1, 1, '2026-08-27 02:10:01', '2026-08-27 03:30:35'),
+(4, 3, '978-0307474773', 'El Método Lean Startup', 'Eric Ries', 45000.00, 70000.00, 12, 'cover_6a8faf061fcd4.png', 1, 1, '2026-08-27 02:10:01', '2026-08-27 03:31:59'),
+(5, 4, '978-628-7638-90-7', 'El buen mal', 'Samanta Schweblin', 35000.00, 50000.00, 10, 'cover_6a8faeabc5844.png', 1, 1, '2026-08-27 03:27:39', '2026-08-27 03:31:50');
 
 -- --------------------------------------------------------
 
@@ -186,14 +179,14 @@ INSERT INTO `libros` (`id`, `categoria_id`, `isbn`, `titulo`, `autor`, `precio_c
 
 CREATE TABLE `proveedores` (
   `id` int(11) NOT NULL,
-  `nit_rut` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `razon_social` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `contacto` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `telefono` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `email` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `direccion` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `nit_rut` varchar(20) NOT NULL,
+  `razon_social` varchar(150) NOT NULL,
+  `contacto` varchar(100) DEFAULT NULL,
+  `telefono` varchar(20) DEFAULT NULL,
+  `email` varchar(150) DEFAULT NULL,
+  `direccion` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -212,9 +205,9 @@ INSERT INTO `proveedores` (`id`, `nit_rut`, `razon_social`, `contacto`, `telefon
 
 CREATE TABLE `roles` (
   `id` int(11) NOT NULL,
-  `nombre` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `descripcion` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `nombre` varchar(50) NOT NULL,
+  `descripcion` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -223,8 +216,7 @@ CREATE TABLE `roles` (
 
 INSERT INTO `roles` (`id`, `nombre`, `descripcion`, `created_at`) VALUES
 (1, 'Administrador', 'Control total del sistema, compras a proveedores y gestion de usuarios', '2026-08-27 02:10:01'),
-(2, 'Vendedor', 'Gestion de ventas a clientes y consulta de inventario', '2026-08-27 02:10:01'),
-(3, 'Cliente', 'Cliente registrado que compra en la tienda online', '2026-09-24 02:36:39');
+(2, 'Vendedor', 'Gestion de ventas a clientes y consulta de inventario', '2026-08-27 02:10:01');
 
 -- --------------------------------------------------------
 
@@ -235,12 +227,12 @@ INSERT INTO `roles` (`id`, `nombre`, `descripcion`, `created_at`) VALUES
 CREATE TABLE `usuarios` (
   `id` int(11) NOT NULL,
   `rol_id` int(11) NOT NULL,
-  `nombre` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `estado` tinyint(1) DEFAULT '1' COMMENT '1: Activo, 0: Inactivo',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `nombre` varchar(100) NOT NULL,
+  `email` varchar(150) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `estado` tinyint(1) DEFAULT 1 COMMENT '1: Activo, 0: Inactivo',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -248,12 +240,12 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id`, `rol_id`, `nombre`, `email`, `password`, `estado`, `created_at`, `updated_at`) VALUES
-(1, 1, 'Admin Principal', 'admin@tienda.com', '$2y$10$J6hQyIyCb0MZCGzdtQbtkuX4zFhGt46B.EmY1eeiXkcYZWm1pyiYy', 1, '2026-08-27 02:10:01', '2026-09-24 02:17:55'),
+(1, 1, 'Admin Principal', 'admin@tienda.com', '$2y$10$lhRFtPAPHfONAkapDK94xOgZw6owG8bBEmjShurmQMIKKVC7KyrQ6', 1, '2026-08-27 02:10:01', '2026-09-23 19:24:10'),
 (2, 2, 'Vendedor Uno', 'vendedor1@tienda.com', '$2y$10$uSAzDixkpH3OM818fV3DKeCH.EnzLnwu3N77jZ.w/EYqkTFywXQ2a', 1, '2026-08-27 02:10:01', '2026-08-27 03:40:34'),
 (3, 1, 'Juan Perez', 'Jperez@gmail.com', '$2y$10$uSAzDixkpH3OM818fV3DKeCH.EnzLnwu3N77jZ.w/EYqkTFywXQ2a', 1, '2026-08-27 02:45:42', '2026-08-27 02:45:42'),
-(4, 1, 'Washington', 'wnieto@gmail.com', '$2y$10$J6hQyIyCb0MZCGzdtQbtkuX4zFhGt46B.EmY1eeiXkcYZWm1pyiYy', 1, '2026-09-04 03:18:27', '2026-09-04 03:18:27'),
-(5, 3, 'Cliente Prueba', 'cliente_test_1790217595@test.com', '$2y$10$emndTmSjdH9vyeqBPZFhJuj58CY8OmLEcvhtBFNLqlhGuGOX9Pd4e', 1, '2026-09-24 02:39:55', '2026-09-24 02:39:55'),
-(6, 3, 'Mario Nieto', 'mnieto@gmail.com', '$2y$10$EALGR4XMbUVP.8x3vMY.FuGj/gMykHQljjgPi8XVO/U7rnAmn4p4O', 1, '2026-09-24 10:07:20', '2026-09-24 10:07:20');
+(4, 1, 'Washington Nieto', 'wnieto@gmail.com', '$2y$10$lhRFtPAPHfONAkapDK94xOgZw6owG8bBEmjShurmQMIKKVC7KyrQ6', 1, '2026-09-02 12:34:36', '2026-09-02 12:34:36'),
+(5, 2, 'Allison Cardona', 'acardona@gmail.com', '$2y$10$Gnpop4ltskNN/xPeuiufhe3FFkUBoIAHnUihAIr867A8kySp1Y5Ou', 1, '2026-09-23 20:17:41', '2026-09-23 20:17:41'),
+(6, 1, 'Mario Ruiz', 'mruiz@gmail.com', '$2y$10$QvV.GvEUHBJXlNYQ2/bKWOMtaZd6WDri4FV6WIknhQBGkQSY8Ashy', 1, '2026-10-16 19:37:39', '2026-10-16 19:37:39');
 
 -- --------------------------------------------------------
 
@@ -265,9 +257,9 @@ CREATE TABLE `ventas` (
   `id` int(11) NOT NULL,
   `cliente_id` int(11) NOT NULL,
   `usuario_id` int(11) NOT NULL COMMENT 'Usuario Vendedor que efectua la venta',
-  `numero_factura` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `total` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `fecha_venta` datetime DEFAULT CURRENT_TIMESTAMP
+  `numero_factura` varchar(50) NOT NULL,
+  `total` decimal(12,2) NOT NULL DEFAULT 0.00,
+  `fecha_venta` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -275,9 +267,7 @@ CREATE TABLE `ventas` (
 --
 
 INSERT INTO `ventas` (`id`, `cliente_id`, `usuario_id`, `numero_factura`, `total`, `fecha_venta`) VALUES
-(1, 1, 2, 'FAC-VEN-0001', '215000.00', '2026-08-26 21:10:01'),
-(2, 3, 5, 'FAC-WEB-D7BD1CA4', '320000.00', '2026-09-23 21:39:55'),
-(3, 4, 6, 'FAC-WEB-6BA4712E', '155000.00', '2026-09-24 05:08:58');
+(1, 1, 2, 'FAC-VEN-0001', 215000.00, '2026-08-26 21:10:01');
 
 --
 -- Índices para tablas volcadas
@@ -295,8 +285,7 @@ ALTER TABLE `categorias`
 --
 ALTER TABLE `clientes`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `documento` (`documento`),
-  ADD UNIQUE KEY `uk_clientes_usuario` (`usuario_id`);
+  ADD UNIQUE KEY `documento` (`documento`);
 
 --
 -- Indices de la tabla `compras`
@@ -378,7 +367,7 @@ ALTER TABLE `categorias`
 -- AUTO_INCREMENT de la tabla `clientes`
 --
 ALTER TABLE `clientes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `compras`
@@ -396,7 +385,7 @@ ALTER TABLE `detalle_compras`
 -- AUTO_INCREMENT de la tabla `detalle_ventas`
 --
 ALTER TABLE `detalle_ventas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `libros`
@@ -414,7 +403,7 @@ ALTER TABLE `proveedores`
 -- AUTO_INCREMENT de la tabla `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
@@ -426,17 +415,11 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `ventas`
 --
 ALTER TABLE `ventas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Restricciones para tablas volcadas
 --
-
---
--- Filtros para la tabla `clientes`
---
-ALTER TABLE `clientes`
-  ADD CONSTRAINT `fk_clientes_usuarios` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `compras`
