@@ -16,6 +16,17 @@ class Libro {
         return $this->db->query($sql)->fetchAll();
     }
 
+    public function getById(int $id): ?array {
+        $sql = "SELECT l.*, c.nombre AS categoria
+                FROM libros l
+                INNER JOIN categorias c ON l.categoria_id = c.id
+                WHERE l.id = :id LIMIT 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':id' => $id]);
+        $libro = $stmt->fetch();
+        return $libro ? $libro : null;
+    }
+
     public function create(array $data): bool {
         $sql = "INSERT INTO libros (categoria_id, isbn, titulo, autor, precio_compra, precio_venta, stock, caratula, destacado) 
                 VALUES (:categoria_id, :isbn, :titulo, :autor, :precio_compra, :precio_venta, :stock, :caratula, :destacado)";
@@ -47,7 +58,30 @@ class Libro {
         return $stmt->fetchAll();
     }
 
-    // Obtener los libros más vendidos
+    // Catálogo público para clientes: solo libros disponibles, con búsqueda y filtro por categoría opcionales
+    public function getDisponibles(string $busqueda = '', int $categoriaId = 0): array {
+        $sql = "SELECT l.*, c.nombre AS categoria
+                FROM libros l
+                INNER JOIN categorias c ON l.categoria_id = c.id
+                WHERE l.estado = 1";
+        $params = [];
+
+        if ($busqueda !== '') {
+            $sql .= " AND (l.titulo LIKE :busqueda OR l.autor LIKE :busqueda)";
+            $params[':busqueda'] = '%' . $busqueda . '%';
+        }
+        if ($categoriaId > 0) {
+            $sql .= " AND l.categoria_id = :categoria_id";
+            $params[':categoria_id'] = $categoriaId;
+        }
+
+        $sql .= " ORDER BY l.titulo ASC";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll();
+    }
+
+    // Obtener los libros más vendidos con base en el historial de ventas
     public function getMasVendidos(int $limit = 6): array {
         $sql = "SELECT l.*, c.nombre AS categoria, SUM(dv.cantidad) AS total_vendidos 
                 FROM detalle_ventas dv 

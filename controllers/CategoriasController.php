@@ -2,7 +2,7 @@
 require_once 'models/Categoria.php';
 
 class CategoriasController {
-    private Categoria $model;
+    private $model; // Se retiró 'Categoria' para mantener compatibilidad con PHP antiguo
 
     public function __construct() {
         if (!isset($_SESSION['user_id'])) {

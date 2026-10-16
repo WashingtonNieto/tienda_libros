@@ -2,7 +2,7 @@
 require_once 'models/Cliente.php';
 
 class ClientesController {
-    private Cliente $model;
+    private $model; // Se retiró 'Cliente' para mantener compatibilidad con PHP antiguo
 
     public function __construct() {
         if (!isset($_SESSION['user_id'])) {

@@ -2,7 +2,7 @@
 require_once 'models/Reporte.php';
 
 class ReportesController {
-    private Reporte $model;
+    private $model; // Se retiró el tipo 'Reporte' para mantener compatibilidad con PHP < 7.4
 
     public function __construct() {
         if (!isset($_SESSION['user_id'])) {
