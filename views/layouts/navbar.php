@@ -83,7 +83,13 @@
                             <i class="bi bi-person-plus me-1"></i> Registrarse
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?php echo BASE_URL; ?>?c=home&a=quienesSomos">
+                            <i class="bi bi-people-fill me-1"></i>Quiénes somos
+                        </a>
+                    </li>                
                 <?php endif; ?>
+
             </ul>
 
         </div>

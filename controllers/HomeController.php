@@ -17,4 +17,13 @@ class HomeController {
         require_once 'views/home/index.php';
         require_once 'views/layouts/footer.php';
     }
+
+    public function quienesSomos() {
+        require_once 'views/layouts/header.php';
+        require_once 'views/layouts/navbar.php';
+        require_once 'views/home/quienes_somos.php';
+        require_once 'views/layouts/footer.php';
+    }    
 }
+
+
